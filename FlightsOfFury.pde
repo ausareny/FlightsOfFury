@@ -11,12 +11,15 @@ Environment mountains[] = new Environment [16];
 Environment waters[] = new Environment [2];
 Environment airports[] = new Environment [2];
 
+int startPositionX = 75;
+int startPositionY = 215;
+
 void setup() {
   size (600, 600);
   background (255);
   smooth();
 
-  airplane = new Plane (75,215,30,30);
+  airplane = new Plane (startPositionX, startPositionY,30,30);
   button = new Environment (width/2, 255, 50, 15, BUTTON, 0);
   landingStrip = new Environment (460,440,50,10,LANDINGSTRIP,0);
 
@@ -119,10 +122,37 @@ void draw() {
   rect (0, height-height/5, width, height/5);
 
   //environment
-  for(int i=0; i<clouds.length; i++) {clouds[i].display();}
-  for(int i=0; i<mountains.length; i++) mountains[i].display();
-  for(int i=0; i<waters.length; i++) waters[i].display();
-  for (int i=0; i<airports.length; i++) airports[i].display();
+  for (int i=0; i<clouds.length; i++) {
+    clouds[i].display();
+  }
+  for (int i=0; i<mountains.length; i++) {
+    mountains[i].display();
+  }
+  for (int i=0; i<mountains.length; i++) {
+    int result = airplane.checkCollisionWithTriangle(mountains[i]);
+    if (result == 1) {
+      mountains[i].mountainFill = color(0);
+      airplane.x = startPositionX;
+      airplane.y = startPositionY;
+    }
+  }
+  for (int i=0; i<waters.length; i++) {
+    waters[i].display();
+  }
+  for (int i=0; i<waters.length; i++) {
+    int result = airplane.checkCollisionWithEnvironment(waters[i]);
+    if (result == 1) {
+      airplane.x = startPositionX;
+      airplane.y = startPositionY;
+    }
+  }
+  for (int i=0; i<airports.length; i++) {
+    airports[i].display();
+  }
+  int result = airplane.checkCollisionWithEnvironment(button);
+  if (result == 1) {
+    button.buttonFill = color(0);
+  }
   
   //button
   button.display();
