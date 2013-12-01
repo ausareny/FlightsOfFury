@@ -48,14 +48,6 @@ class Environment {
     }
   }
 
-  //  boolean collides(Plane plane) {
-  //    return true;
-  //  }
-
-  //  int getType() {
-  //    return type;
-  //  }
-
   void cloudObject() {
     noStroke();
     fill(cloudFill);
@@ -111,6 +103,11 @@ class Environment {
 
   boolean intersects(Plane plane) {
     if (!(plane.top() > bottom() || plane.bottom() < top() || plane.left() > right() || plane.right() < left())) return true;
+    return false;
+  }
+  
+  boolean intersects(int xx, int yy) {
+    if (!(yy-15 > bottom() || yy+15 < top() || xx-15 > right() || xx+15 < left())) return true;
     return false;
   }
 

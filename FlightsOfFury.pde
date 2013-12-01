@@ -137,10 +137,15 @@ void draw() {
 
 boolean placeFree() {
   boolean intersects = false; 
-  for(int i=0; i<clouds.length; i++) {
-    if(clouds[i].intersects(airplane)) return false;
-  }
+  for(int i=0; i<clouds.length; i++) if(clouds[i].intersects(airplane)) return false;
   if(airplane.top()<height/5 || airplane.bottom()>height-height/5) intersects = true;
+  return !intersects;
+}
+
+boolean placeFree(int xx, int yy) {
+  boolean intersects = false; 
+  for(int i=0; i<clouds.length; i++) if(clouds[i].intersects(xx, yy)) return false;
+  if(yy-15<height/5 || yy+15>height-height/5) intersects = true;
   return !intersects;
 }
 
