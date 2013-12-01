@@ -14,6 +14,9 @@ class Environment {
   int type;
   int rotateAngle;
   color cloudFill = color(201, 229, 227);
+  color buttonFill = color(209, 8, 12);
+  color mountainFill = color(155, 137, 123);
+  color waterFill = color(48, 180, 227);
 
   Environment (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight, int tempType, int tempRotateAngle) {
     x = tempX;
@@ -57,7 +60,7 @@ class Environment {
 
   void mountainObject() {
     noStroke();
-    fill(155, 137, 123);
+    fill(mountainFill);
 
     //change origin points
     pushMatrix();
@@ -75,7 +78,7 @@ class Environment {
 
   void waterObject() {
     noStroke();
-    fill(48, 180, 227);
+    fill(waterFill);
     rectMode(CORNER);
     rect (x, y, objectWidth, objectHeight);
   }
@@ -96,7 +99,7 @@ class Environment {
 
   void buttonObject() {
     noStroke();
-    fill(209, 8, 12);
+    fill(buttonFill);
     ellipseMode(CENTER);
     ellipse (x, y, objectWidth, objectHeight);
   }
@@ -126,5 +129,24 @@ class Environment {
   int left() {
     return x;
   }
+  
+  boolean doesPointTouchRectangle (int planeX, int planeY) {
+    boolean result = false;
+    if (planeX>=x && planeX<=x+objectWidth) {
+      if (planeY>=y && planeY<=y+objectHeight) {
+        result=true;
+      }
+    }
+    return result;
+  }
+  
+  boolean doesPointTouchTriangle (int planeX, int planeY) {
+    boolean result = false;
+    if (planeX>=x+(objectWidth/2) && planeX<=x-(objectWidth/2)) {
+      if (planeY>=y+(objectHeight/2) && planeY<=y-(objectHeight/2)) {
+        result=true;
+      }
+    }
+    return result;
+  }
 }
-
