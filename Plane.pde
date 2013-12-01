@@ -123,5 +123,20 @@ class Plane {
   int left() {
     return x-objectWidth/2;
   }
+  
+  int checkCollisionWithEnvironment (Environment environmentObject) {
+    int result = 0;
+    if (environmentObject.doesPointTouchRectangle(x, y)) {
+      result = 1;
+    }
+    return result;
+  }
+  int checkCollisionWithTriangle (Environment triangleObject) {
+    int result = 0;
+    if (triangleObject.doesPointTouchTriangle(x, y)) {
+      result = 1;
+    }
+    return result;
+  }
+  
 }
-
