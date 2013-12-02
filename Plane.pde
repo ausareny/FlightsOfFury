@@ -1,55 +1,53 @@
 class Plane {
-  int x;
-  int y;
-  int objectWidth;
-  int objectHeight;
-  boolean moveDown = false; 
+  
+  int x;            // Position x
+  int y;            // Position y
+  int objectWidth;  // Width of the object
+  int objectHeight; // Height of the object
+  
+  // Variables indicate the direction where the object should move
   boolean moveUp = false;
   boolean moveRight = false;
   boolean moveLeft = false;
   
-  float xSpeed, ySpeed;
-  float accel, deccel;
-  float maxXspd, maxYspd;
-  float xSave, ySave;
-  int xRep, yRep;
-  float gravity;
+  float xSpeed = 0, ySpeed = 0;    // Horizontal and vertical speed
+  float accel = 0.5, deccel = 0.5; // Acceleration and deccelleration of the speed along x
+  float gravity = 0.25;            // Gravity, the rate of change of the speed along y
+  float maxXspd = 2, maxYspd = 52; // Limits horizontal and vertical speed
+  float xSave = 0, ySave = 0;      // Holds the decimal points of the distnace the object should move along the x and y axis
+  int xRep = 0, yRep = 0;          // Holds the integer value of the distnace the object should move along the x and y axis
 
   Plane (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight) {
     x = tempX;
     y = tempY;
     objectWidth = tempObjectWidth;
     objectHeight = tempObjectHeight;
-    xSpeed = 0;
-    ySpeed = 0;
-    accel = 0.5;
-    deccel = 0.5;
-    maxXspd = 2;
-    maxYspd = 55;
-    xSave = 0;
-    ySave = 0;
-    xRep = 0;
-    yRep = 0;
-    gravity = 0.25;
   }
 
   void display() {
-    pushMatrix();
     noStroke();
     fill(175, 175, 175);
     rectMode(CENTER);
     rect(x, y, objectWidth, objectHeight);
-    popMatrix();
   }
-
+  
+  // animates movements of the object
   void updatePosition() {
+    
+    // right pressed
     if(moveRight) {
       xSpeed += accel;
       if(xSpeed>maxXspd) xSpeed = maxXspd;
-    } else if(moveLeft) {
+    }
+    
+    // left presssed
+    else if(moveLeft) {
       xSpeed -= accel;
       if(xSpeed<-maxXspd) xSpeed = -maxXspd;
-    } else { //neither right or left pressed, decelerate
+    }
+    
+    //neither right or left pressed, decelerate
+    else {
       if(xSpeed>0) {
         xSpeed -= deccel;
         if(xSpeed<0) xSpeed = 0;
@@ -58,26 +56,32 @@ class Plane {
         if(xSpeed>0) xSpeed = 0;
       }
     }
-
+    
+    // up presssed
     if(moveUp) {
+      // checking if object is not in the air and landed by testing for collision
+      // with another object one pixel below
       boolean placeFree = placeFree(x, y+1);
-      if(!placeFree) ySpeed = -8;
+      // jumpig in not already in the air
+      if(!placeFree) ySpeed = -7.5;
     }
     
+    // on jump, start decreasing the speed and then return object back to the ground
     ySpeed += gravity;
-    xRep = 0; //should be zero because the for loops count it down but just as a safety
-    yRep = 0;
-    xRep += floor(abs(xSpeed));
-    yRep += floor(abs(ySpeed));
+    
+    // Separating int value and the decimal points of the distance to move such that the object would
+    // always end up at the exact pixel on the screen
+    xRep = floor(abs(xSpeed));
+    yRep = floor(abs(ySpeed));
     xSave += abs(xSpeed)-floor(abs(xSpeed));
     ySave += abs(ySpeed)-floor(abs(ySpeed));
+    
+    // Changing the direction of the moovement depending on wheter speed is positive or negative
     int signX = (xSpeed<0) ? -1 : 1;
     int signY = (ySpeed<0) ? -1 : 1;
-    //when the player is moving a direction collision is tested for only in that direction
-    //the offset variables are used for this in the for loops below
-    int offsetX = (xSpeed<0) ? 0 : 0;
-    int offsetY = (ySpeed<0) ? 0 : 0;
 
+    // If decimal points of the distace to move in xSave or ySave are bigger than 1,
+    // moving 1 to xRep or yRep correspondigly
     if (xSave>=1) {
       xSave -= 1;
       xRep += 1;
@@ -86,30 +90,38 @@ class Plane {
       ySave -= 1;
       yRep += 1;
     }
-
+    
+    // Moving object along the x axis and checking for collisions at each pixel
     for(; xRep>0; xRep--) {
-      if(placeFree(x+offsetX+signX,y)) x+=signX;
+      if(placeFree(x+signX,y)) x+=signX;
+      // Stopping animation/movement if collision is deteced by setting the speed to 0
       else xSpeed = 0;
     }
-
-    for(; yRep>0;yRep--) {
-      if(placeFree(x,y+offsetY+signY)) y += signY;
+    
+    // Moving object along the y axis and checking for collisions at each pixel
+    for(; yRep>0; yRep--) {
+      if(placeFree(x,y+signY)) y += signY;
+      // Stopping animation/movement if collision is deteced by setting the speed to 0
       else ySpeed = 0;
     }
   }
 
+  // Returns the value of y at the top side of the object
   int top() {
     return y-objectHeight/2;
   }
-
+  
+  // Returns the value of x at the right side of the object
   int right() {
     return x+objectWidth/2;
   }
-
+  
+  // Returns the value of y at the bottom side of the object
   int bottom() {
     return y+objectHeight/2;
   }
-
+  
+  // Returns the value of x at the left side of the object
   int left() {
     return x-objectWidth/2;
   }  
