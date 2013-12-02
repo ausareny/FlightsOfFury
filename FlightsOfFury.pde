@@ -25,6 +25,8 @@ int startPositionY = 215;
 PFont f; // declare a variable of type PFont
 String title = "Flights of fury";
 
+boolean pressed = false; // indicates whether the button is pressed
+
 Button pause; // Pause button
 Button restart; // Restart button
 
@@ -181,7 +183,21 @@ void time() {
   textSize(20);
   // Calling and formatting the time
   text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2), 438, 100);
+  //  text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2)+":"+nf(sw.hundrensec(), 2), 438, 100);
 }
+
+void mousePressed()
+{
+  if (pause.isPressed())
+  {
+      sw.stop();
+  }
+  if (restart.isPressed())
+  {
+      sw.start();
+  }
+}
+
 
 // Resets states of the game
 void resetState() {

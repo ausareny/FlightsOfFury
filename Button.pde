@@ -5,9 +5,10 @@ class Button {
   float positionY;  // y-coordinate of the button
   float buttonWidth;// width of the button
   float buttonHeight;// hight of the button
-  boolean pressed = false; // indicates whether the button is pressed
+
   String buttonText;
   /* methods */
+  
   // constructor 
   Button(float x, float y, float w, float h, String newButtonText) {
     positionX = x;
@@ -18,15 +19,19 @@ class Button {
   }
 
   // draws the button
+  boolean isPressed() {
+    if (mousePressed && 
+       mouseX>positionX && mouseX<positionX+buttonWidth && 
+       mouseY>positionY && mouseY<positionY+buttonHeight) {
+       return true;
+    }
+    else {
+      return false;
+    }
+  }
+  
   void display() {
     // Checking if the button is clicked
-    pressed = false;
-    if (mousePressed) {
-      if (mouseX>positionX && mouseX<positionX+buttonWidth && mouseY>positionY && mouseY<positionY+buttonHeight) {
-        pressed = true;
-      }
-    }
-
     // Drawing the shape
     stroke(1);
     fill(255);
