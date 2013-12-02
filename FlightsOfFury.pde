@@ -35,9 +35,8 @@ void setup() {
   background (255);
   smooth();
 
-  println (millis());
-  sw = new StopWatchTimer();
-  sw.start();
+  sw = new StopWatchTimer(); // Assigining stopWatchTimer class to the variable sw
+  sw.start(); // calling the funtion start only once to record the time passed
 
   // load a font into that variable
   f = loadFont("KnarfArtFont-Bold-48.vlw");
@@ -131,6 +130,8 @@ void draw() {
   fill(120);
   noStroke();
   rect(0, 0, width, height/5);
+  time(); // Drawing the timer
+
 
   // write some text to te screen using text(data, xPosition, yPosition), where data is  string
   fill(255);
@@ -142,8 +143,6 @@ void draw() {
   rect(0, height-height/5, width, height/5);
   pause.display();
   restart.display();
-
-  time();
 
   // Drawing environment objects: clouds, mountains, water, and airports
   for (int i=0; i<clouds.length; i++) clouds[i].display();
@@ -176,19 +175,11 @@ void draw() {
   airplane.display();
 }
 
+// Counts the seconds, minutes and hours of the time passed
 void time() {
   fill(200);
-  // textFont(words, 100);
-  //
-  //  text(second()+ , 350, 175);
-  //
-  //  text(":", 300, 175);
-  //
-  //  text(minute(), 250, 175);
-  //
-  //  text(":", 200, 175);
-  //  text(hour(), 150, 175);
   textSize(20);
+  // Calling and formatting the time
   text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2), 438, 100);
 }
 
