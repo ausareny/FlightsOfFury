@@ -65,10 +65,9 @@ class Environment {
     //change origin points
     pushMatrix();
     //set the origin point to where x and y are being called
-    translate (x, y);
+    translate(x, y);
     //rotate the text by the number of degrees in the rotate variable
-    rotate (radians(rotateAngle));
-
+    rotate(radians(rotateAngle));
 
     triangle(0-objectWidth/2, 0+objectHeight/2, 0, 0-objectHeight/2, 0+objectWidth/2, 0+objectHeight/2);
 
@@ -115,38 +114,22 @@ class Environment {
   }
 
   int top() {
+    if(type==MOUNTAIN || type==BUTTON) return y-objectHeight/2;
     return y;
   }
 
   int right() {
+    if(type==MOUNTAIN || type==BUTTON) return x+objectWidth/2;
     return x+objectWidth;
   }
 
   int bottom() {
+    if(type==MOUNTAIN || type==BUTTON) return y+objectHeight/2;
     return y+objectHeight;
   }
 
   int left() {
+    if(type==MOUNTAIN || type==BUTTON) return x-objectWidth/2;
     return x;
-  }
-  
-  boolean doesPointTouchRectangle (int planeX, int planeY) {
-    boolean result = false;
-    if (planeX>=x && planeX<=x+objectWidth) {
-      if (planeY>=y && planeY<=y+objectHeight) {
-        result=true;
-      }
-    }
-    return result;
-  }
-  
-  boolean doesPointTouchTriangle (int planeX, int planeY) {
-    boolean result = false;
-    if (planeX>=x+(objectWidth/2) && planeX<=x-(objectWidth/2)) {
-      if (planeY>=y+(objectHeight/2) && planeY<=y-(objectHeight/2)) {
-        result=true;
-      }
-    }
-    return result;
   }
 }

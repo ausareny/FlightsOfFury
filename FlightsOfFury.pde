@@ -65,46 +65,26 @@ void setup() {
 
 int currentCloudIndex = 0;
 void addCloud(int x, int y, int objectWidth, int objectHeight) {
-  if (currentCloudIndex < clouds.length) {
-    clouds[currentCloudIndex] = new Environment(x, y, objectWidth, objectHeight, CLOUD, 0);
-    currentCloudIndex++;
-  }
-  else {
-    println("Too many clouds!");
-  }
+  if(currentCloudIndex < clouds.length) clouds[currentCloudIndex++] = new Environment(x, y, objectWidth, objectHeight, CLOUD, 0);
+  else println("Too many clouds!");
 }
 
 int currentMountainIndex = 0;
 void addMountain(int x, int y, int objectWidth, int objectHeight, int objectRotate) {
-  if (currentMountainIndex < mountains.length) {
-    mountains[currentMountainIndex] = new Environment(x, y, objectWidth, objectHeight, MOUNTAIN, objectRotate);
-    currentMountainIndex++;
-  }
-  else {
-    println("Too many mountains!");
-  }
+  if(currentMountainIndex < mountains.length) mountains[currentMountainIndex++] = new Environment(x, y, objectWidth, objectHeight, MOUNTAIN, objectRotate);
+  else println("Too many mountains!");
 }
 
 int currentWaterIndex = 0;
 void addWater(int x, int y, int objectWidth, int objectHeight) {
-  if (currentWaterIndex < waters.length) {
-    waters[currentWaterIndex] = new Environment(x, y, objectWidth, objectHeight, WATER, 0);
-    currentWaterIndex++;
-  }
-  else {
-    println("Too many water objects!");
-  }
+  if(currentWaterIndex < waters.length) waters[currentWaterIndex++] = new Environment(x, y, objectWidth, objectHeight, WATER, 0);
+  else println("Too many water objects!");
 }
 
 int currentAirportIndex = 0;
 void addAirport(int x, int y, int objectWidth, int objectHeight) {
-  if (currentAirportIndex < airports.length) {
-    airports[currentAirportIndex] = new Environment(x, y, objectWidth, objectHeight, AIRPORT, 0);
-    currentAirportIndex++;
-  }
-  else {
-    println("Too many airports!");
-  }
+  if(currentAirportIndex < airports.length) airports[currentAirportIndex++] = new Environment(x, y, objectWidth, objectHeight, AIRPORT, 0);
+  else println("Too many airports!");
 }
 
 
@@ -115,11 +95,11 @@ void draw() {
   rectMode(CORNER);
   fill(150);
   noStroke();
-  rect (0, 0, width, height/5);
+  rect(0, 0, width, height/5);
 
   //footer
   fill(150);
-  rect (0, height-height/5, width, height/5);
+  rect(0, height-height/5, width, height/5);
 
   //environment
   for (int i=0; i<clouds.length; i++) {
@@ -127,34 +107,19 @@ void draw() {
   }
   for (int i=0; i<mountains.length; i++) {
     mountains[i].display();
-  }
-  for (int i=0; i<mountains.length; i++) {
-    int result = airplane.checkCollisionWithTriangle(mountains[i]);
-    if (result == 1) {
-      mountains[i].mountainFill = color(0);
-      airplane.x = startPositionX;
-      airplane.y = startPositionY;
-    }
+    if(mountains[i].intersects(airplane)) resetState();
   }
   for (int i=0; i<waters.length; i++) {
     waters[i].display();
+    if(waters[i].intersects(airplane)) resetState();
   }
-  for (int i=0; i<waters.length; i++) {
-    int result = airplane.checkCollisionWithEnvironment(waters[i]);
-    if (result == 1) {
-      airplane.x = startPositionX;
-      airplane.y = startPositionY;
-    }
-  }
+  
   for (int i=0; i<airports.length; i++) {
     airports[i].display();
   }
-  int result = airplane.checkCollisionWithEnvironment(button);
-  if (result == 1) {
-    button.buttonFill = color(0);
-  }
   
   //button
+  if(button.intersects(airplane)) button.buttonFill = color(0);
   button.display();
   
   //nalding strip
@@ -165,18 +130,17 @@ void draw() {
   airplane.display();
 }
 
-boolean placeFree() {
-  boolean intersects = false; 
-  for(int i=0; i<clouds.length; i++) if(clouds[i].intersects(airplane)) return false;
-  if(airplane.top()<height/5 || airplane.bottom()>height-height/5) intersects = true;
-  return !intersects;
+void resetState() {
+  airplane.x = startPositionX;
+  airplane.y = startPositionY;
 }
 
 boolean placeFree(int xx, int yy) {
-  boolean intersects = false; 
+  boolean placeFree = true; 
   for(int i=0; i<clouds.length; i++) if(clouds[i].intersects(xx, yy)) return false;
-  if(yy-15<height/5 || yy+15>height-height/5) intersects = true;
-  return !intersects;
+  if(yy-15<height/5 || yy+15>height-height/5) placeFree = false;
+  if(xx-15<0 || xx+15>width) placeFree = false;
+  return placeFree;
 }
 
 void keyPressed () {
