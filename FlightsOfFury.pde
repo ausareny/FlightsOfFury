@@ -25,6 +25,9 @@ int startPositionY = 215;
 PFont f; // declare a variable of type PFont
 String title = "Flights of fury";
 
+Button pause; // Pause button
+Button restart; // Restart button
+
 void setup() {
   size (600, 600);
   background (255);
@@ -34,6 +37,9 @@ void setup() {
   f = loadFont("KnarfArtFont-Bold-48.vlw");
   // tell processing to use the font you want and the size
   textFont(f, 48);
+  
+  pause = new Button(0, 570, width/2, 30, "Pause");
+  restart = new Button(width/2, 570, width/2, 30, "Restart");
 
   airplane = new Plane (startPositionX, startPositionY, 30, 30);
   button = new Environment (width/2, 255, 50, 15, BUTTON, 0);
@@ -122,11 +128,14 @@ void draw() {
 
   // write some text to te screen using text(data, xPosition, yPosition), where data is  string
   fill(255);
+  textSize(48);
   text(title, 20, 60);
 
   // Drawing footer
   fill(120);
   rect(0, height-height/5, width, height/5);
+  pause.display();
+  restart.display();
 
   // Drawing environment objects: clouds, mountains, water, and airports
   for (int i=0; i<clouds.length; i++) clouds[i].display();
