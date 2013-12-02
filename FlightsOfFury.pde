@@ -28,16 +28,22 @@ String title = "Flights of fury";
 Button pause; // Pause button
 Button restart; // Restart button
 
+StopWatchTimer sw; // Stop watch for counting time
+
 void setup() {
   size (600, 600);
   background (255);
   smooth();
 
+  println (millis());
+  sw = new StopWatchTimer();
+  sw.start();
+
   // load a font into that variable
   f = loadFont("KnarfArtFont-Bold-48.vlw");
   // tell processing to use the font you want and the size
   textFont(f, 48);
-  
+
   pause = new Button(0, 570, width/2, 30, "Pause");
   restart = new Button(width/2, 570, width/2, 30, "Restart");
 
@@ -137,6 +143,8 @@ void draw() {
   pause.display();
   restart.display();
 
+  time();
+
   // Drawing environment objects: clouds, mountains, water, and airports
   for (int i=0; i<clouds.length; i++) clouds[i].display();
   for (int i=0; i<mountains.length; i++) mountains[i].display();
@@ -166,6 +174,22 @@ void draw() {
   // Drawing thr airplane
   airplane.updatePosition();
   airplane.display();
+}
+
+void time() {
+  fill(200);
+  // textFont(words, 100);
+  //
+  //  text(second()+ , 350, 175);
+  //
+  //  text(":", 300, 175);
+  //
+  //  text(minute(), 250, 175);
+  //
+  //  text(":", 200, 175);
+  //  text(hour(), 150, 175);
+  textSize(20);
+  text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2), 438, 100);
 }
 
 // Resets states of the game
