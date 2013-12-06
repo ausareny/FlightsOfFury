@@ -33,8 +33,8 @@ class Button {
   void display() {
     // Checking if the button is clicked
     // Drawing the shape
-    stroke(1);
-    fill(255);
+    stroke(140);
+    fill(215);
     textSize(16);
     rectMode(CORNER);
     rect(positionX, positionY, buttonWidth, buttonHeight);
