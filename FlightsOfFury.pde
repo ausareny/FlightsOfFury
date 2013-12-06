@@ -35,6 +35,8 @@ Button restart; // Restart button
 
 StopWatchTimer sw; // Stop watch for counting time
 
+
+
 void setup() {
   size (600, 600);
   background (255);
@@ -128,21 +130,33 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 void draw() {
 
   // Reseting the image by applying white background
-  background(245,252,252);
+  background(245, 252, 252);
 
   // Drawing environment objects: clouds, mountains, water, and airports
-  for (int i=0; i<waters.length; i++) {waters[i].display();}
-  for (int i=0; i<clouds.length; i++) {clouds[i].display();}
-  for (int i=0; i<mountains.length; i++) {mountains[i].display();}
-  for (int i=0; i<airports.length; i++) {airports[i].display();}
+  for (int i=0; i<waters.length; i++) {
+    waters[i].display();
+  }
+  for (int i=0; i<clouds.length; i++) {
+    clouds[i].display();
+  }
+  for (int i=0; i<mountains.length; i++) {
+    mountains[i].display();
+  }
+  for (int i=0; i<airports.length; i++) {
+    airports[i].display();
+  }
 
   // Checking if the airpalne touched any of mountains or water and resetting the game if it did
-  for (int i=0; i<mountains.length; i++) if (mountains[i].intersects(airplane)) {resetState();}
-  for (int i=0; i<waters.length; i++) if (waters[i].intersects(airplane)) {resetState();}
+  for (int i=0; i<mountains.length; i++) if (mountains[i].intersects(airplane)) {
+    resetState();
+  }
+  for (int i=0; i<waters.length; i++) if (waters[i].intersects(airplane)) {
+    resetState();
+  }
 
   // Drawing button
   button.display();
-  
+
   // Drawing header
   rectMode(CORNER);
   fill(75);
@@ -160,7 +174,7 @@ void draw() {
   rect(0, height-height/5, width, height/5);
   pause.display(); //Draws the pause button
   restart.display(); //Draws the restart button 
-  
+
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
   if (button.intersects(airplane)) {
@@ -173,20 +187,38 @@ void draw() {
   // Checking if the airplan has touched a visible landing strip
   // if it did, reset the game indicating that the level has been successfully passed
   // and add a number to level count
-  if (!landingStrip.hidden && landingStrip.intersects(airplane)) { 
-    resetState();
-    levelCount++;
+
+  int time = millis();
+  int wait = 3000;
+
+
+  if (!landingStrip.hidden && landingStrip.intersects(airplane)) {
+    if (time <= time+wait) {
+      bannerDisplay();
+    } 
+    else if (time > time+wait) {
+      resetState();
+      levelCount++;
+    }
   }
 
   // Drawing the airplane and updating its position
   airplane.display();
   airplane.updatePosition();
-  
+
   // For the fourth level, have the airplane follow the mouse
-  if (levelCount == 3){
+  if (levelCount == 3) {
     airplane.x = mouseX;
     airplane.y = mouseY;
   }
+}
+
+void bannerDisplay() {
+  fill(0);
+  rect(0, 200, width, 200);
+  fill(255);
+  textSize(40);
+  text("Stage complete", width/8, height/2);
 }
 
 // Counts the seconds, minutes and hours of the time passed
@@ -206,7 +238,7 @@ void mousePressed() {
   if (restart.isPressed())
   {
     sw.start();
-    
+
     //restart the game
     levelCount = 0;
   }
@@ -263,7 +295,7 @@ void keyPressed () {
       airplane.moveLeft = true; 
       break;
     case LEFT: 
-    airplane.moveRight = true;
+      airplane.moveRight = true;
       break;
     case UP: 
       airplane.moveUp = true; 
