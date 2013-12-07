@@ -35,7 +35,7 @@ Button restart; // Restart button
 
 StopWatchTimer sw; // Stop watch for counting time
 
-
+int time = -1; // setting time value to -1 indicating that timer has not been set yet; "impossible value"
 
 void setup() {
   size (600, 600);
@@ -188,17 +188,18 @@ void draw() {
   // if it did, reset the game indicating that the level has been successfully passed
   // and add a number to level count
 
-  int time = millis();
-  int wait = 3000;
-
 
   if (!landingStrip.hidden && landingStrip.intersects(airplane)) {
-    if (time <= time+wait) {
+    // Setting the time of interestion if it hasn't been set yet, set only once so it doesn't receive the current time
+    if(time == -1) {    // if time is at unsetable state
+      time = millis();  // record time from the moment airpline got to the landing strip
+    }
+    // comparing current time to the time when intersection happened + the time of the holding period
+    if (millis() <= time+1500) {
       bannerDisplay();
-    } 
-    else if (time > time+wait) {
-      resetState();
+    } else {
       levelCount++;
+      resetState();
     }
   }
 
@@ -246,6 +247,7 @@ void mousePressed() {
 
 // Resets states of the game
 void resetState() {
+  time = -1;
   // Putting airplane to its initial position
   airplane.x = startPositionX;
   airplane.y = startPositionY;
