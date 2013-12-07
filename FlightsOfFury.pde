@@ -338,10 +338,8 @@ void keyReleased() {
 
 void stop()
 {
-  in.close();  // always close audio I/O classes
-
-  minim.stop();  // always stop your Minim object
-
+  song.close();   // always close audio I/O classes
+  minim.stop();   // always stop your Minim object
 
   super.stop();
 }
