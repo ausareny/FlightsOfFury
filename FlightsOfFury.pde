@@ -1,3 +1,8 @@
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer song;
+
 //Variable holding plane object
 Plane airplane;
 
@@ -41,6 +46,15 @@ void setup() {
   size (600, 600);
   background (255);
   smooth();
+
+
+  // this loads file from the data folder
+  //  for ( int i = 0; i < time; i++) {
+  minim = new Minim(this); // instantiating a Minim object
+  song = minim.loadFile("Pendulum.wav"); // adding a file
+  song.loop(); // loops or restarts the current song from the begining
+  //  }
+
 
   sw = new StopWatchTimer(); // Assigining stopWatchTimer class to the variable sw
   sw.start(); // calling the funtion start only once to record the time passed
@@ -191,13 +205,14 @@ void draw() {
 
   if (!landingStrip.hidden && landingStrip.intersects(airplane)) {
     // Setting the time of interestion if it hasn't been set yet, set only once so it doesn't receive the current time
-    if(time == -1) {    // if time is at unsetable state
+    if (time == -1) {    // if time is at unsetable state
       time = millis();  // record time from the moment airpline got to the landing strip
     }
     // comparing current time to the time when intersection happened + the time of the holding period
     if (millis() <= time+1500) {
       bannerDisplay();
-    } else {
+    } 
+    else {
       levelCount++;
       resetState();
     }
@@ -319,5 +334,15 @@ void keyReleased() {
   airplane.moveRight = false; 
   airplane.moveLeft = false; 
   airplane.moveUp = false;
+}
+
+void stop()
+{
+  in.close();  // always close audio I/O classes
+
+  minim.stop();  // always stop your Minim object
+
+
+  super.stop();
 }
 
