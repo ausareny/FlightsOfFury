@@ -266,6 +266,8 @@ void mousePressed() {
 
     //restart the game
     levelCount = 0;
+    stageCount = 0;
+    crashCount = 0;
   }
 }
 
@@ -322,6 +324,20 @@ void keyPressed () {
       break;
     case LEFT: 
       airplane.moveRight = true;
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
+  if (levelCount == 4) {
+    // ...no going back
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = false; 
       break;
     case UP: 
       airplane.moveUp = true; 
