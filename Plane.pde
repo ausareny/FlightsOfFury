@@ -16,19 +16,23 @@ class Plane {
   float maxXspd = 2, maxYspd = 52; // Limits horizontal and vertical speed
   float xSave = 0, ySave = 0;      // Holds the decimal points of the distnace the object should move along the x and y axis
   int xRep = 0, yRep = 0;          // Holds the integer value of the distnace the object should move along the x and y axis
+  
+  PImage photo;
 
   Plane (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight) {
     x = tempX;
     y = tempY;
     objectWidth = tempObjectWidth;
     objectHeight = tempObjectHeight;
+    photo = loadImage("airplane-cartoon2.png");
   }
 
   void display() {
     noStroke();
     fill(175, 175, 175);
     rectMode(CENTER);
-    rect(x, y, objectWidth, objectHeight);
+    //rect(x, y, objectWidth, objectHeight);
+    image(photo, x-30, y-32);
   }
 
   // animates movements of the object

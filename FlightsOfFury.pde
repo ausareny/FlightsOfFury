@@ -35,6 +35,8 @@ boolean pressed = false; // indicates whether the button is pressed
 // Game level number
 int levelCount;
 
+int crashCount;
+
 Button pause; // Pause button
 Button restart; // Restart button
 
@@ -47,13 +49,11 @@ void setup() {
   background (255);
   smooth();
 
-
   // this loads file from the data folder
-  //  for ( int i = 0; i < time; i++) {
   minim = new Minim(this); // instantiating a Minim object
-  song = minim.loadFile("Pendulum.wav"); // adding a file
+  song = minim.loadFile("The Royal Guardsmen - Airplane Song(My Airplane).wav"); // adding a file
   song.loop(); // loops or restarts the current song from the begining
-  //  }
+
 
 
   sw = new StopWatchTimer(); // Assigining stopWatchTimer class to the variable sw
@@ -162,9 +162,11 @@ void draw() {
 
   // Checking if the airpalne touched any of mountains or water and resetting the game if it did
   for (int i=0; i<mountains.length; i++) if (mountains[i].intersects(airplane)) {
+    crashCount++;
     resetState();
   }
   for (int i=0; i<waters.length; i++) if (waters[i].intersects(airplane)) {
+    crashCount++;
     resetState();
   }
 
@@ -188,6 +190,9 @@ void draw() {
   rect(0, height-height/5, width, height/5);
   pause.display(); //Draws the pause button
   restart.display(); //Draws the restart button 
+  fill(255);
+  // Display crash count as a text
+  text("Crashes: "+crashCount, 400, 500);
 
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
