@@ -34,7 +34,7 @@ boolean pressed = false; // indicates whether the button is pressed
 
 // Game level number
 int levelCount;
-
+int stageCount;
 int crashCount;
 
 Button pause; // Pause button
@@ -193,6 +193,7 @@ void draw() {
   fill(255);
   // Display crash count as a text
   text("Crashes: "+crashCount, 400, 500);
+  text("Stage: "+stageCount, 100, 500);
 
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
@@ -219,6 +220,7 @@ void draw() {
     } 
     else {
       levelCount++;
+      stageCount++;
       resetState();
     }
   }
@@ -254,7 +256,9 @@ void time() {
 void mousePressed() {
   if (pause.isPressed())
   {
-    sw.stop();
+    sw.pausePressed = !sw.pausePressed;
+;
+    sw.pause();
   }
   if (restart.isPressed())
   {
