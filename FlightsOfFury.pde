@@ -33,7 +33,7 @@ String title = "Flights of fury";
 boolean pressed = false; // indicates whether the button is pressed
 
 // Game level number
-int levelCount;
+int levelCount = -1;
 int crashCount;
 int jumpCount = 0;
 
@@ -143,6 +143,10 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 
 
 void draw() {
+  if(levelCount == -1) {
+    bannerPlay();
+    return;
+  }
 
   // Reseting the image by applying white background
   background(245, 252, 252);
@@ -250,6 +254,9 @@ void draw() {
   if (levelCount == 3) {
     airplane.x = mouseX;
     airplane.y = mouseY;
+  } 
+  else if (levelCount==10) {
+    bannerEnd();
   }
 }
 
@@ -258,7 +265,37 @@ void bannerDisplay() {
   rect(0, 200, width, 200);
   fill(255);
   textSize(40);
-  text("Stage complete", width/8, height/2);
+  textAlign(CENTER, CENTER);
+  text("Stage complete", width/2, height/2);
+  textAlign(LEFT, BASELINE);
+}
+
+void bannerEnd() {
+  fill(255);
+  rect(0, 0, 1200, 1200);
+  fill(0);
+  textSize(26);
+  textAlign(CENTER, CENTER);
+  text("That's not the end", width/2, height/2-50);
+  textSize(18);
+  text("Continue questioning your habits", width/2, height/2+50);
+  textAlign(LEFT, BASELINE);
+}
+
+void bannerPlay() {
+  fill(255);
+  rect(0, 0, 1200, 1200);
+  fill(0);
+  textSize(26);
+  textAlign(CENTER, CENTER);
+  text("Play", width/2, height/2);
+  Button buttonPlay = new Button(width/2-50, height/2-25, 100, 50, " ");
+  buttonPlay.hidden = true;
+  buttonPlay.display();
+  if(buttonPlay.isPressed()) {
+    levelCount++;
+  }
+  textAlign(LEFT, BASELINE);
 }
 
 // Counts the seconds, minutes and hours of the time passed

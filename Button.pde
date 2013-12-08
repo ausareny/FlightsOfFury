@@ -8,7 +8,9 @@ class Button {
 
   String buttonText;
   /* methods */
-  
+
+  boolean hidden = false;
+
   // constructor 
   Button(float x, float y, float w, float h, String newButtonText) {
     positionX = x;
@@ -21,16 +23,17 @@ class Button {
   // draws the button
   boolean isPressed() {
     if (mousePressed && 
-       mouseX>positionX && mouseX<positionX+buttonWidth && 
-       mouseY>positionY && mouseY<positionY+buttonHeight) {
-       return true;
+      mouseX>positionX && mouseX<positionX+buttonWidth && 
+      mouseY>positionY && mouseY<positionY+buttonHeight) {
+      return true;
     }
     else {
       return false;
     }
   }
-  
+
   void display() {
+    if (hidden) return;
     // Checking if the button is clicked
     // Drawing the shape
     stroke(140);
