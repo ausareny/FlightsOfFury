@@ -171,7 +171,7 @@ void draw() {
     resetState();
   }
   for (int i=0; i<waters.length; i++) if (waters[i].intersects(airplane)) {
-    if (levelCount == 6) {
+    if (levelCount == 4) {
       airplane.initialYSpeed = -12;
       airplane.moveUp = true;
     } 
@@ -210,7 +210,7 @@ void draw() {
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
   if (button.intersects(airplane)) {    
-    if ( levelCount == 5) {
+    if ( levelCount == 2) {
       landingStrip.hidden = true;
     }
     else {
@@ -243,7 +243,7 @@ void draw() {
   if (levelCount == 7) {
     airplane.windSpeed = -0.35;
   } 
-  else if (levelCount == 8) {
+  else if (levelCount == 9) {
     airplane.antiGravity = 0.2;
   }
   // Drawing the airplane and updating its position
@@ -251,7 +251,7 @@ void draw() {
   airplane.updatePosition();
 
   // For the fourth level, have the airplane follow the mouse
-  if (levelCount == 3) {
+  if (levelCount == 6) {
     airplane.x = mouseX;
     airplane.y = mouseY;
   } 
@@ -331,7 +331,7 @@ void resetState() {
   airplane.x = startPositionX;
   airplane.y = startPositionY;
   // Hiding landing strip as it is not visible at the begining of the level
-  if ( levelCount == 5) {
+  if ( levelCount == 2) {
     landingStrip.hidden = false;
   } 
   else {
@@ -392,7 +392,7 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 4) {
+  if (levelCount == 8) {
     // ...no going back
     switch(keyCode) {
     case RIGHT: 
@@ -406,7 +406,7 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 5) {
+  if (levelCount == 2) {
 
     switch(keyCode) {
     case RIGHT: 
@@ -420,7 +420,7 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 6) {
+  if (levelCount == 4) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -443,7 +443,7 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 8) {
+  if (levelCount == 9) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -456,7 +456,7 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 9) {
+  if (levelCount == 5) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -476,7 +476,7 @@ void keyPressed () {
 
 void mouseDragged() {
   // For the third level, drag the airplane along the mouse's x and y position
-  if (levelCount == 2) {
+  if (levelCount == 3) {
     airplane.x = mouseX;
     airplane.y = mouseY;
   }
