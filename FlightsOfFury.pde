@@ -356,13 +356,7 @@ void keyPressed () {
     }
   }
   if (levelCount == 5) {
-    landingStrip.hidden = false;
-    if (button.intersects(airplane)) {
-      landingStrip.hidden = true;
-      landingStrip.display();
-    }
-    landingStrip.display();
-
+    
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
