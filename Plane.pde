@@ -18,6 +18,7 @@ class Plane {
   int xRep = 0, yRep = 0;          // Holds the integer value of the distnace the object should move along the x and y axis
   
   PImage photo;
+  float initialYSpeed = -7.5;
 
   Plane (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight) {
     x = tempX;
@@ -76,7 +77,8 @@ class Plane {
       // with another object one pixel below
       boolean placeFree = placeFree(x, y+1);
       // jumpig in not already in the air
-      if (!placeFree) ySpeed = -7.5;
+      if (!placeFree) ySpeed = initialYSpeed;
+      moveUp = false;
     }
 
     // on jump, start decreasing the speed and then return object back to the ground

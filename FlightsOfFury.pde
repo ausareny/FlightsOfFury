@@ -34,7 +34,6 @@ boolean pressed = false; // indicates whether the button is pressed
 
 // Game level number
 int levelCount;
-int stageCount;
 int crashCount;
 
 Button pause; // Pause button
@@ -142,6 +141,7 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 
 
 void draw() {
+//  levelCount = 6;
 
   // Reseting the image by applying white background
   background(245, 252, 252);
@@ -166,8 +166,14 @@ void draw() {
     resetState();
   }
   for (int i=0; i<waters.length; i++) if (waters[i].intersects(airplane)) {
-    crashCount++;
-    resetState();
+    if (levelCount == 6) {
+      airplane.initialYSpeed = -12;
+      airplane.moveUp = true;
+    } 
+    else {
+      crashCount++;
+      resetState();
+    }
   }
 
   // Drawing button
@@ -194,7 +200,7 @@ void draw() {
   // Display crash count as a text
   text("Crashes: "+crashCount, 438, 500);
   textSize(28);
-  text("Stage: "+stageCount, 40, 530);
+  text("Stage: "+(levelCount+1), 40, 530);
 
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
@@ -226,7 +232,6 @@ void draw() {
     } 
     else {
       levelCount++;
-      stageCount++;
       resetState();
     }
   }
@@ -272,7 +277,6 @@ void mousePressed() {
 
     //restart the game
     levelCount = 0;
-    stageCount = 0;
     crashCount = 0;
   }
 }
@@ -290,6 +294,7 @@ void resetState() {
   else {
     landingStrip.hidden = true;
   }
+  airplane.initialYSpeed = -7.5;
 }
 
 // Checks if the plane can occupy the loactaion at xx and yy coordinates on the screen
@@ -356,7 +361,7 @@ void keyPressed () {
     }
   }
   if (levelCount == 5) {
-    
+
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -367,6 +372,20 @@ void keyPressed () {
     case UP: 
       airplane.moveUp = true; 
       break;
+    }
+  }
+  if (levelCount == 6) {
+
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
+      break;
+//    case UP: 
+//      airplane.moveUp = true; 
+//      break;
     }
   }
 }
