@@ -19,6 +19,8 @@ class Plane {
   
   PImage photo;
   float initialYSpeed = -7.5;
+  float windSpeed = 0;
+  float antiGravity = 0;
 
   Plane (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight) {
     x = tempX;
@@ -70,6 +72,8 @@ class Plane {
         }
       }
     }
+    //if (xSpeed >
+    xSpeed += windSpeed;
 
     // up presssed
     if (moveUp) {
@@ -83,6 +87,9 @@ class Plane {
 
     // on jump, start decreasing the speed and then return object back to the ground
     ySpeed += gravity;
+    if (ySpeed > -2.5) {
+    ySpeed -= antiGravity;
+    }
 
     // Separating int value and the decimal points of the distance to move such that the object would
     // always end up at the exact pixel on the screen

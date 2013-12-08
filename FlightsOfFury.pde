@@ -35,6 +35,7 @@ boolean pressed = false; // indicates whether the button is pressed
 // Game level number
 int levelCount;
 int crashCount;
+int jumpCount = 0;
 
 Button pause; // Pause button
 Button restart; // Restart button
@@ -42,6 +43,7 @@ Button restart; // Restart button
 StopWatchTimer sw; // Stop watch for counting time
 
 int time = -1; // setting time value to -1 indicating that timer has not been set yet; "impossible value"
+
 
 void setup() {
   size (600, 600);
@@ -141,7 +143,6 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 
 
 void draw() {
-//  levelCount = 6;
 
   // Reseting the image by applying white background
   background(245, 252, 252);
@@ -200,14 +201,14 @@ void draw() {
   // Display crash count as a text
   text("Crashes: "+crashCount, 438, 500);
   textSize(28);
-  text("Stage: "+(levelCount+1), 40, 530);
+  text("Stage: "+(levelCount+1), 20, 530);
 
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
   if (button.intersects(airplane)) {    
     if ( levelCount == 5) {
       landingStrip.hidden = true;
-    } 
+    }
     else {
       landingStrip.hidden = false;
     }
@@ -235,7 +236,12 @@ void draw() {
       resetState();
     }
   }
-
+  if (levelCount == 7) {
+    airplane.windSpeed = -0.35;
+  } 
+  else if (levelCount == 8) {
+    airplane.antiGravity = 0.2;
+  }
   // Drawing the airplane and updating its position
   airplane.display();
   airplane.updatePosition();
@@ -295,6 +301,9 @@ void resetState() {
     landingStrip.hidden = true;
   }
   airplane.initialYSpeed = -7.5;
+  airplane.windSpeed = 0;
+  airplane.antiGravity = 0;
+  jumpCount = 0;
 }
 
 // Checks if the plane can occupy the loactaion at xx and yy coordinates on the screen
@@ -375,7 +384,6 @@ void keyPressed () {
     }
   }
   if (levelCount == 6) {
-
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -383,9 +391,48 @@ void keyPressed () {
     case LEFT: 
       airplane.moveLeft = true; 
       break;
-//    case UP: 
-//      airplane.moveUp = true; 
-//      break;
+    }
+  }
+  if (levelCount == 7) {
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
+  if (levelCount == 8) {
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
+  if (levelCount == 9) {
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
+      break;
+    case UP: 
+      if (jumpCount < 1) {
+        airplane.moveUp = true; 
+        jumpCount++;
+      }
+      break;
     }
   }
 }
