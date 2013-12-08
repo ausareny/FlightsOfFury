@@ -192,13 +192,19 @@ void draw() {
   restart.display(); //Draws the restart button 
   fill(255);
   // Display crash count as a text
-  text("Crashes: "+crashCount, 400, 500);
-  text("Stage: "+stageCount, 100, 500);
+  text("Crashes: "+crashCount, 438, 500);
+  textSize(28);
+  text("Stage: "+stageCount, 40, 530);
 
 
   // Checking if the airplane pressed the button and displaying the landing strip if it did
-  if (button.intersects(airplane)) {
-    landingStrip.hidden = false;
+  if (button.intersects(airplane)) {    
+    if ( levelCount == 5) {
+      landingStrip.hidden = true;
+    } 
+    else {
+      landingStrip.hidden = false;
+    }
   }
 
   // Drawing landing strip
@@ -257,7 +263,7 @@ void mousePressed() {
   if (pause.isPressed())
   {
     sw.pausePressed = !sw.pausePressed;
-;
+    ;
     sw.pause();
   }
   if (restart.isPressed())
@@ -278,7 +284,12 @@ void resetState() {
   airplane.x = startPositionX;
   airplane.y = startPositionY;
   // Hiding landing strip as it is not visible at the begining of the level
-  landingStrip.hidden = true;
+  if ( levelCount == 5) {
+    landingStrip.hidden = false;
+  } 
+  else {
+    landingStrip.hidden = true;
+  }
 }
 
 // Checks if the plane can occupy the loactaion at xx and yy coordinates on the screen
@@ -338,6 +349,26 @@ void keyPressed () {
       break;
     case LEFT: 
       airplane.moveLeft = false; 
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
+  if (levelCount == 5) {
+    landingStrip.hidden = false;
+    if (button.intersects(airplane)) {
+      landingStrip.hidden = true;
+      landingStrip.display();
+    }
+    landingStrip.display();
+
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
       break;
     case UP: 
       airplane.moveUp = true; 
