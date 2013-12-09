@@ -17,13 +17,13 @@ class StopWatchTimer {
     startTime = millis();
   }
   
-  // Pauses the timer by setting pauseTime and paused flag to true
+  // Pauses the timer by setting pauseTime, and setting the paused flag to true
   void pause() {
     pauseTime = millis();
     paused = true;
   }
   
-  // Resumes the timer by adjusting the start time with the time it spend during pause and paused flag to false
+  // Resumes the timer by adjusting the start time with the time it spend during pause, and setting the paused flag to false
   void resume() {
     int timeInPauseState = millis() - pauseTime;
     startTime += timeInPauseState;
@@ -36,15 +36,15 @@ class StopWatchTimer {
     return millis( )- startTime;
   }
 
-  // Tourining milliseconds into seconds
+  // Turning milliseconds into seconds
   int second() {
     return (getElapsedTime() / 1000) % 60;
   }
-  // Tourining milliseconds into minutes
+  // Turning milliseconds into minutes
   int minute() {
     return (getElapsedTime() / (1000*60)) % 60;
   }
-  // Tourining milliseconds into hours
+  // Turning milliseconds into hours
   int hour() {
     return (getElapsedTime() / (1000*60*60)) % 24;
   }

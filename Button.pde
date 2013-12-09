@@ -1,3 +1,10 @@
+/** 
+* Title: Flights of Fury <br>
+* Name: Amanda Lee and Justyna Ausareny <br>
+* Date: December 9th, 2013 <br>
+* Description: Button class<br> 
+**/
+
 /**
  * This class represents a clickable button that can be found on the "Play", "Pause" and "Resume" buttons in the game
  * This button detects whether the mouse has been clicked inside its boundries by triggering the isPressed boolean to true

@@ -30,23 +30,25 @@ class Plane {
   float windSpeed = 0;             // Windspeed, initially is 0, but could be set to positive or negative value to add movement along the x-axis
   float antiGravity = 0;           // Anti gravity, initially is 0 but can be set to positive value to slow down the fall of the object along the y-axis
 
-  // Constructs the object with x and y position, widh, and height
+  // Class constructor. Builds a new plane object with given position and size
+  // tempX: x-coordinate of the object
+  // tempY: y-coordinate of the object
+  // tempObjectWidth: width of the object (in pixels)
+  // tempObjectHeight: height of the object (in pixels)
   Plane (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight) {
+    // Directly assign properties and values
     x = tempX;
     y = tempY;
     objectWidth = tempObjectWidth;
     objectHeight = tempObjectHeight;
+    
+    // Load chosen image into the variable
     photo = loadImage("airplane-cartoon2.png");
   }
   
   // Displays the object on the screen
   void display() {
     noStroke();
-    fill(175, 175, 175);
-    rectMode(CENTER);
-    
-    
-    //rect(x, y, objectWidth, objectHeight); // Here for testing
     
     // Displays image of the airplane at x and y position
     image(photo, x-30, y-32);
@@ -55,23 +57,23 @@ class Plane {
   // Animates movements of the object
   void updatePosition() {
 
-    // Right pressed
+    // If right is pressed
     if (moveRight) {
-      // Increasing speed to move right
+      // Increase speed to move right
       xSpeed += accel;
       
-      // Limiting speed to maximmu speed
+      // Limits speed to the maximum speed
       if (xSpeed>maxXspd) {
         xSpeed = maxXspd;
       }
     }
 
-    // Left presssed
+    // If left is presssed
     else if (moveLeft) {
-      // Increasing speed to move left
+      // Increase speed to move left
       xSpeed -= accel;
       
-      // Limiting speed to maximmu speed
+      // Limits speed to the maximum speed
       if (xSpeed<-maxXspd) {
         xSpeed = -maxXspd;
       }
@@ -80,16 +82,16 @@ class Plane {
     // Neither right nor left pressed, decelerate
     else {
       if (xSpeed>0) {
-        // Decreasing speed to move left
+        // Decrease speed to move left
         xSpeed -= deccel;
         
-        // Limiting decrease in speed if the speed reached 0
+        // Limits decrease in speed if the speed reached 0
         if (xSpeed<0) {
           xSpeed = 0;
         }
       } 
       else if (xSpeed<0) {
-        // Decreasing speed to move right
+        // Decrease speed to move right
         xSpeed += deccel;
         
         // Limiting decrease in speed if the speed reached 0

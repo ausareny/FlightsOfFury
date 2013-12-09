@@ -1,3 +1,10 @@
+/** 
+* Title: Flights of Fury <br>
+* Name: Amanda Lee and Justyna Ausareny <br>
+* Date: December 9th, 2013 <br>
+* Description: Environment class<br> 
+**/
+
 //Define variable names and numbers for each type of environment object
 final int CLOUD        = 0;
 final int MOUNTAIN     = 1;
