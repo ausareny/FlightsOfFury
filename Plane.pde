@@ -1,3 +1,11 @@
+/** 
+* Title: Flights of Fury <br>
+* Name: Amanda Lee and Justyna Ausareny <br>
+* Date: December 9th, 2013 <br>
+* Description: Plane class represents the airplane object in the game, as well as provides functionality that controlls its movements <br> 
+**/
+
+// Plane class represents the airplane object in the game, as well as provides functionality that controlls its movements
 class Plane {
 
   int x;            // Position x
@@ -17,11 +25,12 @@ class Plane {
   float xSave = 0, ySave = 0;      // Holds the decimal points of the distnace the object should move along the x and y axis
   int xRep = 0, yRep = 0;          // Holds the integer value of the distnace the object should move along the x and y axis
   
-  PImage photo;
-  float initialYSpeed = -7.5;
-  float windSpeed = 0;
-  float antiGravity = 0;
+  PImage photo;                    // Image that represents the airplane on the screen in the game
+  float initialYSpeed = -7.5;      // Initial speed of the jump
+  float windSpeed = 0;             // Windspeed, initially is 0, but could be set to positive or negative value to add movement along the x-axis
+  float antiGravity = 0;           // Anti gravity, initially is 0 but can be set to positive value to slow down the fall of the object along the y-axis
 
+  // Constructs the object with x and y position, widh, and height
   Plane (int tempX, int tempY, int tempObjectWidth, int tempObjectHeight) {
     x = tempX;
     y = tempY;
@@ -29,66 +38,87 @@ class Plane {
     objectHeight = tempObjectHeight;
     photo = loadImage("airplane-cartoon2.png");
   }
-
+  
+  // Displays the object on the screen
   void display() {
     noStroke();
     fill(175, 175, 175);
     rectMode(CENTER);
-    //rect(x, y, objectWidth, objectHeight);
+    
+    
+    //rect(x, y, objectWidth, objectHeight); // Here for testing
+    
+    // Displays image of the airplane at x and y position
     image(photo, x-30, y-32);
   }
 
-  // animates movements of the object
+  // Animates movements of the object
   void updatePosition() {
 
-    // right pressed
+    // Right pressed
     if (moveRight) {
+      // Increasing speed to move right
       xSpeed += accel;
+      
+      // Limiting speed to maximmu speed
       if (xSpeed>maxXspd) {
         xSpeed = maxXspd;
       }
     }
 
-    // left presssed
+    // Left presssed
     else if (moveLeft) {
+      // Increasing speed to move left
       xSpeed -= accel;
+      
+      // Limiting speed to maximmu speed
       if (xSpeed<-maxXspd) {
         xSpeed = -maxXspd;
       }
     }
 
-    //neither right or left pressed, decelerate
+    // Neither right nor left pressed, decelerate
     else {
       if (xSpeed>0) {
+        // Decreasing speed to move left
         xSpeed -= deccel;
+        
+        // Limiting decrease in speed if the speed reached 0
         if (xSpeed<0) {
           xSpeed = 0;
         }
       } 
       else if (xSpeed<0) {
+        // Decreasing speed to move right
         xSpeed += deccel;
+        
+        // Limiting decrease in speed if the speed reached 0
         if (xSpeed>0) {
           xSpeed = 0;
         }
       }
     }
-    //if (xSpeed >
+    
+    // Adjusting xSpeed with the speed of the wind
     xSpeed += windSpeed;
 
-    // up presssed
+    // Up presssed
     if (moveUp) {
-      // checking if object is not in the air and landed by testing for collision
-      // with another object one pixel below
+      // Checking if object is not in the air and landed by testing for collision
+      // with another object one pixel below to avoid jumps in the air
       boolean placeFree = placeFree(x, y+1);
-      // jumpig in not already in the air
+      
+      // If jump is in not in the air, setting ySpeed to create a jump
       if (!placeFree) ySpeed = initialYSpeed;
       moveUp = false;
     }
 
-    // on jump, start decreasing the speed and then return object back to the ground
+    // On jump, start decreasing the speed and then return object back to the ground
     ySpeed += gravity;
+    
+    // Adjusting ySpeed with the antiGravity to slow down the fall (if antiGravity is not 0)
     if (ySpeed > -2.5) {
-    ySpeed -= antiGravity;
+      ySpeed -= antiGravity;
     }
 
     // Separating int value and the decimal points of the distance to move such that the object would
