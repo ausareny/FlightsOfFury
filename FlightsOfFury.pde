@@ -2,7 +2,8 @@
 * Title: Flights of Fury <br>
 * Name: Amanda Lee and Justyna Ausareny <br>
 * Date: December 9th, 2013 <br>
-* Description: Option 2 - Open Brief <br> 
+* Description: FlightsOfFury - main calss of the game that controlls overall behaviour and the state. <br>
+* It is resposible for constructing the environments, switching levels, and controlling various aspects of the game.<br> 
 **/
 
 //Import music library
@@ -58,9 +59,10 @@ Button restart;
 // Variable holding the stop watch
 StopWatchTimer sw; 
 
-// Holds the exact time that a level was completed at.
+// Holds the exact time that a level was completed at
 // Set time value to -1 indicating that timer has not been set yet; "impossible value"
 // it will only be set at the moment the plane touches the landingStrip indicating the end of a level
+// Used to controll stage complete banner
 int time = -1;
 
 // Initializes environment
@@ -76,7 +78,6 @@ void setup() {
   minim = new Minim(this); // instantiating a Minim object
   song = minim.loadFile("The Royal Guardsmen - Airplane Song(My Airplane).wav"); // adding a file
   song.loop(); // loops or restarts the current song from the begining
-
 
   // Assigining stopWatchTimer class to the variable sw
   sw = new StopWatchTimer();
@@ -172,6 +173,7 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 // Draws the animation
 void draw() {
   
+  // Freezing the picture on pause by returning from the draw() method
   if(sw.paused) {
      return;
    }
@@ -213,9 +215,9 @@ void draw() {
   // Checking if the airplane has collided with any of mountain or water objects
   // resets the level and adds a number to the crash counter if it does collide
   for (int i=0; i<mountains.length; i++) {
-    if (mountains[i].intersects(airplane)) {
-    crashCount++;
-    resetState();
+    if(mountains[i].intersects(airplane)) {
+      crashCount++;
+      resetState();
     }
   }
   for (int i=0; i<waters.length; i++) {
@@ -267,10 +269,9 @@ void draw() {
   // Checks if the airplane has collided with the button, and displays the landing strip when it does
   if (redButton.intersects(airplane)) {  
     // However, if it is the third level, have the landing strip hide when the airplane collides with the button 
-    if ( levelCount == 2) {
+    if (levelCount == 2) {
       landingStrip.hidden = true;
-    }
-    else {
+    } else {
       landingStrip.hidden = false;
     }
   }
@@ -292,8 +293,7 @@ void draw() {
     // Display the banner for 1.5 seconds from the time of the collision
     if (millis() <= time+1500) {
       bannerStage();
-    } 
-    else {
+    } else {
       levelCount++;
       resetState();
     }
@@ -304,14 +304,17 @@ void draw() {
     airplane.x = mouseX;
     airplane.y = mouseY;
   } 
+  
   // For the eighth level, have the x value of the airplane move backwards creating a simulation of strong wind
   if (levelCount == 7) {
     airplane.windSpeed = -0.35;
   } 
+  
   // For the tenth level, create a floating effect where gravity does not seem as dominant
   if (levelCount == 9) {
     airplane.antiGravity = 0.2;
   }
+  
   // At the end of all 10 levels, display the end banner
   if (levelCount==10) {
     bannerEnd();
@@ -334,6 +337,7 @@ void bannerPlay() {
   // Declare variable to hold play button instance and initialize it with the given properties
   Button buttonPlay = new Button(width/2-50, height/2-25, 100, 50, " ");
   buttonPlay.hidden = true;
+  
   // Draw the play button
   buttonPlay.display();
   
@@ -396,9 +400,9 @@ void resetState() {
   // For the third level, have to landing strip visible from the start
   if ( levelCount == 2) {
     landingStrip.hidden = false;
-  } 
+  }
+  // Otherwise, hide landing strip as it is not visible at the begining of the level
   else {
-    // Otherwise, hide landing strip as it is not visible at the begining of the level
     landingStrip.hidden = true;
   }
   
@@ -447,22 +451,33 @@ boolean placeFree(int xx, int yy) {
 // ...or continue the counter of the stop watch timer from the pause time
 // when the mouse is pressed on the restart button, it will reset the stop watch timer, the entire game, and the crash count
 void mousePressed() {
-
-  if(sw.paused) {
-       sw.resume();
-     } 
-  else {
-       sw.pause(); 
-     }
-     
-  if (restart.isPressed())
-  {
-    //resets stop watch
+  
+  // Handling pause button pressed 
+  if(pause.isPressed()) {
+    
+    // Resuming the game if it is paused
+    if(sw.paused) {
+      sw.resume();
+    }
+    
+    // Pausing the game if it is running
+    else {
+      sw.pause();
+    }
+  }
+  
+  // Handling restart button pressed 
+  if (restart.isPressed()) {
+    
+    // Reset stop watch
     sw.start();
 
-    //restarts the game
+    // Restart the counter
     levelCount = 0;
     crashCount = 0;
+    
+    // Reset the state
+    resetState();
   }
 }
 
@@ -471,7 +486,7 @@ void mousePressed() {
 void keyPressed () {
   
   // For the first level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
-  if (levelCount == 0) {
+  if(levelCount == 0) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -484,8 +499,9 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the second level, switch LEFT and RIGHT movements on keys pressed, and keep UP movement the same
-  if (levelCount == 1) {
+  else if(levelCount == 1) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveLeft = true; 
@@ -498,8 +514,9 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the third level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
-  if (levelCount == 2) {
+  else if(levelCount == 2) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -512,8 +529,9 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the fifth level, only move the airplane LEFT or RIGHT on its corresponding left or right keys
-  if (levelCount == 4) {
+  else if(levelCount == 4) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -523,9 +541,10 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the sixth level, move the airplane LEFT or RIGHT on its corresponding left or right keys
   // and only allow the player to use the UP key once on its corresponding up key
-  if (levelCount == 5) {
+  else if(levelCount == 5) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -541,8 +560,9 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the eighth level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
-  if (levelCount == 7) {
+  else if(levelCount == 7) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -555,8 +575,9 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the ninth level, only move the airplane RIGHT, or UP on its corresponding right and up keys
-  if (levelCount == 8) {
+  else if(levelCount == 8) {
     // ...no going back
     switch(keyCode) {
     case RIGHT: 
@@ -570,8 +591,9 @@ void keyPressed () {
       break;
     }
   }
+  
   // For the first level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
-  if (levelCount == 9) {
+  else if(levelCount == 9) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -605,11 +627,10 @@ void keyReleased() {
   airplane.moveUp = false;
 }
 
-void stop()
-{
+// Stops music before exiting
+void stop() {
   song.close();   // always close audio I/O classes
   minim.stop();   // always stop your Minim object
-
-  super.stop();
+  super.stop();   // passing stop to the super class
 }
 

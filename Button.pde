@@ -23,7 +23,8 @@ class Button {
 
   // String holding the text to be displayed in the button
   String buttonText;
-
+  
+  // Indicates if the object is hidden and prevents its drawinf if it is
   boolean hidden = false;
 
   // Class constructor. Builds a new button with given starting position, size and string.
@@ -58,6 +59,7 @@ class Button {
   // Renders the button to the screen
   void display() {
     
+    // If hidden is true, returning from the method such that nothing is drawn
     if (hidden) {
       return;
     }

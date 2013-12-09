@@ -16,7 +16,7 @@ final int BUTTON       = 5;
 /**
  * This class represents all the environment objects that do not move in the game
  * The properties of the environment objects are called upon their class and array initializations 
-   in the void setup function
+ * in the void setup function
  */
 class Environment {
   
@@ -46,7 +46,7 @@ class Environment {
   color landingStripGray = color(98, 98, 98);
   color landingStripYellow = color(216,211,35);
   
-  //
+  // Indicates if the object is hidden and prevents its drawinf if it is
   boolean hidden = false;
 
   // Class constructor. Builds a new environment object with given position, size type and angle
@@ -68,8 +68,11 @@ class Environment {
 
   //Renders the object to the screen
   void display() {
+    
     // If hidden is true, returning from the method such that nothing is drawn
-    if (hidden) return;
+    if (hidden) {
+      return;
+    }
 
     // Draws appropriate object according to the type that is being called
     if (type == CLOUD) {cloudObject();}
