@@ -143,6 +143,9 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 
 
 void draw() {
+  if(sw.paused) {
+    return;
+  }
   if(levelCount == -1) {
     bannerPlay();
     return;
@@ -310,9 +313,11 @@ void time() {
 void mousePressed() {
   if (pause.isPressed())
   {
-    sw.pausePressed = !sw.pausePressed;
-    ;
-    sw.pause();
+    if(sw.paused) {
+      sw.resume();
+    } else {
+     sw.pause(); 
+    }
   }
   if (restart.isPressed())
   {
