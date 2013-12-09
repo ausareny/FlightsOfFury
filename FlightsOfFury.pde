@@ -172,11 +172,11 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
 // Draws the animation
 void draw() {
   
-  //For the first screen, display the start banner holding the play button
   if(sw.paused) {
-    return;
-  }
-  
+     return;
+   }
+ 
+  //For the first screen, display the start banner holding the play button
   if(levelCount == -1) {
     bannerPlay();
     return;
@@ -384,7 +384,7 @@ void time() {
   text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2), 438, 100);
 }
 
-// Resets states of the game
+// Function to reset the states of the game
 void resetState() {
   // Resets time variable by erasing the time that was recorded when the airpline collided with landing strip in the previous level
   time = -1;
