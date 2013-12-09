@@ -1,5 +1,14 @@
+/** 
+* Title: Flights of Fury <br>
+* Name: Amanda Lee and Justyna Ausareny <br>
+* Date: December 9th, 2013 <br>
+* Description: Option 2 - Open Brief <br> 
+**/
+
+//Import music library
 import ddf.minim.*;
 
+//Variables holding minim and song to be played
 Minim minim;
 AudioPlayer song;
 
@@ -7,7 +16,7 @@ AudioPlayer song;
 Plane airplane;
 
 //Variables holding the button and landing strip object
-Environment button;
+Environment redButton;
 Environment landingStrip;
 
 //Arrays holding the cloud, mountain, water and airport objects
@@ -22,58 +31,77 @@ int currentMountainIndex = 0;
 int currentWaterIndex = 0;
 int currentAirportIndex = 0;
 
-// Start position of the plane
+// Start position of the airplane in the initial airport
 int startPositionX = 75;
 int startPositionY = 215;
 
-//create a Processing version of the font we want to use
-PFont f; // declare a variable of type PFont
+// Declare a variable of type PFont
+PFont f; 
+// String holding the title of the game
 String title = "Flights of fury";
 
-boolean pressed = false; // indicates whether the button is pressed
+// Indicates whether the button has been pressed
+boolean pressed = false;
 
-// Game level number
+// Level counter that hold different stages
+// it starts at the -1 property which displays the start banner
 int levelCount = -1;
+
+// Counter holding how many times the player has crashed into a mountain or water
 int crashCount;
 int jumpCount = 0;
 
-Button pause; // Pause button
-Button restart; // Restart button
+// Variables holding pause and restart buttons
+Button pause; 
+Button restart;
 
-StopWatchTimer sw; // Stop watch for counting time
+// Variable holding the stop watch
+StopWatchTimer sw; 
 
-int time = -1; // setting time value to -1 indicating that timer has not been set yet; "impossible value"
+// Holds the exact time that a level was completed at.
+// Set time value to -1 indicating that timer has not been set yet; "impossible value"
+// it will only be set at the moment the plane touches the landingStrip indicating the end of a level
+int time = -1;
 
-
+// Initializes environment
 void setup() {
+  // Resize window.
   size (600, 600);
+  
+  //set background color and smoothness
   background (255);
   smooth();
 
-  // this loads file from the data folder
+  // this loads the music file from the data folder
   minim = new Minim(this); // instantiating a Minim object
   song = minim.loadFile("The Royal Guardsmen - Airplane Song(My Airplane).wav"); // adding a file
   song.loop(); // loops or restarts the current song from the begining
 
 
+  // Assigining stopWatchTimer class to the variable sw
+  sw = new StopWatchTimer();
+  // calling the funtion start only once to record the time passed
+  sw.start();
 
-  sw = new StopWatchTimer(); // Assigining stopWatchTimer class to the variable sw
-  sw.start(); // calling the funtion start only once to record the time passed
-
-  // load a font into that variable
+  // Load the vlw font file from the data folder into a variable
   f = loadFont("KnarfArtFont-Bold-48.vlw");
-  // tell processing to use the font you want and the size
+  // tell processing which font and size to use for the text
   textFont(f, 48);
 
+  // Instantiating the Button class into the pause and restart variables, and defining its positions and properties 
   pause = new Button(0, 570, width/2, 30, "Pause");
   restart = new Button(width/2, 570, width/2, 30, "Restart");
 
+  // Instantiating the Plane class into the airplane variable, and defining its position and size
   airplane = new Plane (startPositionX, startPositionY, 30, 30);
-  button = new Environment (width/2, 255, 50, 15, BUTTON, 0);
+  
+  // Instantiating the Environment class into the redButton and landingStrip variables, and defining its position and properties
+  redButton = new Environment (width/2, 255, 50, 15, BUTTON, 0);
   landingStrip = new Environment (460, 435, 50, 10, LANDINGSTRIP, 0);
+  // Telling the landing strip to start off hidden
   landingStrip.hidden = true;
 
-  // Adding clouds objects
+  // Adding clouds objects and defining their positions and sizes
   addCloud(0, 300, 100, 180);
   addCloud(200, 445, 70, 35);
   addCloud(270, 380, 70, 100);
@@ -90,15 +118,15 @@ void setup() {
   addCloud(380, 200, 50, 25);
   addCloud(430, 300, 35, 20);
 
-  // Adding water objects
+  // Adding water objects and defining their positions and sizes
   addWater(100, 450, 100, 30);
   addWater(340, 450, 65, 30);
 
-  // Adding airport objects
+  // Adding airport objects and defining their positions and sizes
   addAirport(0, 120, 90, 80);
   addAirport(510, 370, 90, 80);
 
-  // Adding mountains
+  // Adding mountains and defining their positions, sizes, and angles of rotation
   addMountain(15, 215, 30, 30, 90);
   addMountain(15, 250, 30, 30, 90);
   addMountain(15, 285, 30, 30, 90);
@@ -141,17 +169,23 @@ void addAirport(int x, int y, int objectWidth, int objectHeight) {
   else println("Too many airports!");
 }
 
-
+// Draws the animation
 void draw() {
+  
+  if(sw.paused) {
+     return;
+   }
+ 
+  //For the first screen, display the start banner holding the play button
   if(levelCount == -1) {
     bannerPlay();
     return;
   }
 
-  // Reseting the image by applying white background
+  // Resets the background to the given color
   background(245, 252, 252);
 
-  // Drawing environment objects: clouds, mountains, water, and airports
+  // Displays environment objects (clouds, mountains, water, and airports) within its proper array
   for (int i=0; i<waters.length; i++) {
     waters[i].display();
   }
@@ -164,52 +198,75 @@ void draw() {
   for (int i=0; i<airports.length; i++) {
     airports[i].display();
   }
+  
+  // Draws the landing strip
+  landingStrip.display();
+  
+  // Draws the red button
+  redButton.display();
+  
+  // Draws the airplane and updates its position
+  airplane.display();
+  airplane.updatePosition();
 
-  // Checking if the airpalne touched any of mountains or water and resetting the game if it did
-  for (int i=0; i<mountains.length; i++) if (mountains[i].intersects(airplane)) {
+
+  // Checking if the airplane has collided with any of mountain or water objects
+  // resets the level and adds a number to the crash counter if it does collide
+  for (int i=0; i<mountains.length; i++) {
+    if (mountains[i].intersects(airplane)) {
     crashCount++;
     resetState();
+    }
   }
-  for (int i=0; i<waters.length; i++) if (waters[i].intersects(airplane)) {
-    if (levelCount == 4) {
-      airplane.initialYSpeed = -12;
-      airplane.moveUp = true;
-    } 
-    else {
-      crashCount++;
-      resetState();
+  for (int i=0; i<waters.length; i++) {
+    if (waters[i].intersects(airplane)) {
+      // However, if it is the Fifth level, make the airplane jump up when it collides with the water
+      if (levelCount == 4) {
+        airplane.initialYSpeed = -12;
+        airplane.moveUp = true;
+      } 
+      else {
+        crashCount++;
+        resetState();
+      }
     }
   }
 
-  // Drawing button
-  button.display();
-
-  // Drawing header
-  rectMode(CORNER);
+  // Draws header and sets its fill, stroke and rectMode values
   fill(75);
   noStroke();
+  rectMode(CORNER);
   rect(0, 0, width, height/5);
-  time(); // Drawing the timer
+  
+  // Draws the timer
+  time();
 
-  // Write title to the screen using: text(data, xPosition, yPosition)
+  // Write game title to the screen using: text(data, xPosition, yPosition)
   fill(255);
   textSize(48);
+  textAlign(LEFT, BASELINE);
   text(title, 20, 60);
 
-  // Drawing footer
+  // Drawing footer and sets its fill, stroke and rectMode values
   fill(75);
+  noStroke();
+  rectMode(CORNER);
   rect(0, height-height/5, width, height/5);
-  pause.display(); //Draws the pause button
-  restart.display(); //Draws the restart button 
+  
+  //Draws the pause and restart buttons
+  pause.display(); 
+  restart.display();
+  
+  // Displays crash count and stage count as a text on the screen and sets it color, size, alignment and position values
   fill(255);
-  // Display crash count as a text
+  textAlign(LEFT, BASELINE);
   text("Crashes: "+crashCount, 438, 500);
   textSize(28);
   text("Stage: "+(levelCount+1), 20, 530);
 
-
-  // Checking if the airplane pressed the button and displaying the landing strip if it did
-  if (button.intersects(airplane)) {    
+  // Checks if the airplane has collided with the button, and displays the landing strip when it does
+  if (redButton.intersects(airplane)) {  
+    // However, if it is the third level, have the landing strip hide when the airplane collides with the button 
     if ( levelCount == 2) {
       landingStrip.hidden = true;
     }
@@ -217,154 +274,204 @@ void draw() {
       landingStrip.hidden = false;
     }
   }
-
-  // Drawing landing strip
-  landingStrip.display();
-
-  // Checking if the airplan has touched a visible landing strip
-  // if it did, reset the game indicating that the level has been successfully passed
-  // and add a number to level count
-
-
+  
+  /**
+  * Checking if the airplane has touched a visible/unhidden landing strip
+  * if it did, reset the airplane, display the banner indicating that the level has been successfully passed
+  * and continue on to the next level by increasing the level count
+  **/
+  //If the airplane has collided with the landing strip
   if (!landingStrip.hidden && landingStrip.intersects(airplane)) {
-    // Setting the time of interestion if it hasn't been set yet, set only once so it doesn't receive the current time
-    if (time == -1) {    // if time is at unsetable state
-      time = millis();  // record time from the moment airpline got to the landing strip
+    
+    // if time is still at unsettable state
+    if (time == -1) { 
+      // record the time that the airpline collided with landing strip
+      time = millis();
     }
-    // comparing current time to the time when intersection happened + the time of the holding period
+    
+    // Display the banner for 1.5 seconds from the time of the collision
     if (millis() <= time+1500) {
-      bannerDisplay();
+      bannerStage();
     } 
     else {
       levelCount++;
       resetState();
     }
   }
-  if (levelCount == 7) {
-    airplane.windSpeed = -0.35;
-  } 
-  else if (levelCount == 9) {
-    airplane.antiGravity = 0.2;
-  }
-  // Drawing the airplane and updating its position
-  airplane.display();
-  airplane.updatePosition();
 
-  // For the fourth level, have the airplane follow the mouse
+  // For the seventh level, have the airplane follow the mouse
   if (levelCount == 6) {
     airplane.x = mouseX;
     airplane.y = mouseY;
   } 
-  else if (levelCount==10) {
+  // For the eighth level, have the x value of the airplane move backwards creating a simulation of strong wind
+  if (levelCount == 7) {
+    airplane.windSpeed = -0.35;
+  } 
+  // For the tenth level, create a floating effect where gravity does not seem as dominant
+  if (levelCount == 9) {
+    airplane.antiGravity = 0.2;
+  }
+  // At the end of all 10 levels, display the end banner
+  if (levelCount==10) {
     bannerEnd();
   }
 }
 
-void bannerDisplay() {
+// Function holding the start banner
+void bannerPlay() {
+  // Setting fill, stroke, size and position for rectangle banner
+  fill(255);
+  noStroke();
+  rect(0, 0, 1200, 1200);
+  
+  // Setting color, size, alignment, and position for "Play" text
   fill(0);
+  textSize(26);
+  textAlign(CENTER, CENTER);
+  text("Play", width/2, height/2);
+  
+  // Declare variable to hold play button instance and initialize it with the given properties
+  Button buttonPlay = new Button(width/2-50, height/2-25, 100, 50, " ");
+  buttonPlay.hidden = true;
+  // Draw the play button
+  buttonPlay.display();
+  
+  // When the play button is pressed, start level one
+  if(buttonPlay.isPressed()) {
+    levelCount++;
+  }
+}
+
+// Function holding the stage complete banner
+void bannerStage() {
+  // Setting properties for black banner
+  fill(0);
+  noStroke();
   rect(0, 200, width, 200);
+  
+  // Setting color, size, alignment, and position for "Stage complete" text
   fill(255);
   textSize(40);
   textAlign(CENTER, CENTER);
   text("Stage complete", width/2, height/2);
-  textAlign(LEFT, BASELINE);
 }
 
+// Function holding the end banner
 void bannerEnd() {
+  // Setting fill, stroke, size and position for rectangle banner
   fill(255);
+  noStroke();
   rect(0, 0, 1200, 1200);
+  
+  // Setting color, size, alignment, and position for end banner text
   fill(0);
   textSize(26);
   textAlign(CENTER, CENTER);
   text("That's not the end", width/2, height/2-50);
   textSize(18);
   text("Continue questioning your habits", width/2, height/2+50);
-  textAlign(LEFT, BASELINE);
 }
 
-void bannerPlay() {
-  fill(255);
-  rect(0, 0, 1200, 1200);
-  fill(0);
-  textSize(26);
-  textAlign(CENTER, CENTER);
-  text("Play", width/2, height/2);
-  Button buttonPlay = new Button(width/2-50, height/2-25, 100, 50, " ");
-  buttonPlay.hidden = true;
-  buttonPlay.display();
-  if(buttonPlay.isPressed()) {
-    levelCount++;
-  }
-  textAlign(LEFT, BASELINE);
-}
-
-// Counts the seconds, minutes and hours of the time passed
+// Function holding the stop watch timer
 void time() {
+  // Setting color, size, and alignment for text
   fill(200);
+  textAlign(LEFT, BASELINE);
   textSize(20);
-  // Calling and formatting the time
+  
+  // Calling, formatting and positioning the time
   text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2), 438, 100);
-  //  text(nf(sw.hour(), 2)+":"+nf(sw.minute(), 2)+":"+nf(sw.second(), 2)+":"+nf(sw.hundrensec(), 2), 438, 100);
 }
 
-void mousePressed() {
-  if (pause.isPressed())
-  {
-    sw.pausePressed = !sw.pausePressed;
-    ;
-    sw.pause();
-  }
-  if (restart.isPressed())
-  {
-    sw.start();
-
-    //restart the game
-    levelCount = 0;
-    crashCount = 0;
-  }
-}
-
-// Resets states of the game
+// Function to reset the states of the game
 void resetState() {
+  // Resets time variable by erasing the time that was recorded when the airpline collided with landing strip in the previous level
   time = -1;
-  // Putting airplane to its initial position
+  
+  // Puts airplane back to its start position in the initial airport
   airplane.x = startPositionX;
   airplane.y = startPositionY;
-  // Hiding landing strip as it is not visible at the begining of the level
+  
+  // For the third level, have to landing strip visible from the start
   if ( levelCount == 2) {
     landingStrip.hidden = false;
   } 
   else {
+    // Otherwise, hide landing strip as it is not visible at the begining of the level
     landingStrip.hidden = true;
   }
+  
+  // Making sure individual level features are not passed on to other levels
   airplane.initialYSpeed = -7.5;
   airplane.windSpeed = 0;
   airplane.antiGravity = 0;
   jumpCount = 0;
 }
 
-// Checks if the plane can occupy the loactaion at xx and yy coordinates on the screen
+// Checks if the plane has free space to occupy the locataion at xx and yy coordinates on the screen
 // such that it does not intersect any of the Cloud or Airport objects
 boolean placeFree(int xx, int yy) {
   // Assuming that initially the place is free
   boolean placeFree = true;
-  // Checking for intersaction with all the clouds and airports.
-  // If the airplane intersecta with any of the clouds, returning false
-  for (int i=0; i<clouds.length; i++) if (clouds[i].intersects(xx, yy)) return false;
-  // If the airplane intersecta with any of the airports, returning false
-  for (int i=0; i<airports.length; i++) if (airports[i].intersects(xx, yy)) return false;
-  // Checking if the airplane intersects header or footer
-  if (yy-15<height/5 || yy+15>height-height/5) placeFree = false;
-  // Checking if the airplane intersects left or right edges of the canvas
-  if (xx-15<0 || xx+15>width) placeFree = false;
-  // Returning the result
+  
+  // Checking for intersection with all objects:
+  // If the airplane intersects with any of the clouds, return false
+  for (int i=0; i<clouds.length; i++) {
+    if (clouds[i].intersects(xx, yy)) {
+      return false;
+    }
+  }
+  // If the airplane intersects with any of the airports, return false
+  for (int i=0; i<airports.length; i++) {
+    if (airports[i].intersects(xx, yy)) {
+      return false;
+    }
+  }
+  
+  // If the airplane intersects header or footer, return false
+  if (yy-15<height/5 || yy+15>height-height/5) {
+    placeFree = false;
+  }
+  // If the airplane intersects left or right edges of the canvas, return false
+  if (xx-15<0 || xx+15>width) {
+    placeFree = false;
+  }
+  
+  // Return the result
   return placeFree;
 }
 
+// This function is triggered by a mouse event: 
+// when the mouse is pressed on the pause button, it will pause the stop watch timer and display the pause time... 
+// ...or continue the counter of the stop watch timer from the pause time
+// when the mouse is pressed on the restart button, it will reset the stop watch timer, the entire game, and the crash count
+void mousePressed() {
+
+  if(sw.paused) {
+       sw.resume();
+     } 
+  else {
+       sw.pause(); 
+     }
+     
+  if (restart.isPressed())
+  {
+    //resets stop watch
+    sw.start();
+
+    //restarts the game
+    levelCount = 0;
+    crashCount = 0;
+  }
+}
+
+// This function is triggered by a key event: when a key is pressed, it will set the trigger
+// the airplane to move in certain ways/directions depending on which level is being played
 void keyPressed () {
-  // For the first level...
-  if (levelCount == 0) {
-    // ...move the airplane LEFT, RIGHT, and/or UP on keys pressed
+  
+  // For the first level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
+  if (levelCount == 0 || 2) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -377,9 +484,8 @@ void keyPressed () {
       break;
     }
   }
-  // For the second level...
+  // For the second level, switch LEFT and RIGHT movements on keys pressed, and keep UP movement the same
   if (levelCount == 1) {
-    // ...switch LEFT and RIGHT movements on keys pressed, and keep UP movement
     switch(keyCode) {
     case RIGHT: 
       airplane.moveLeft = true; 
@@ -392,22 +498,8 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 8) {
-    // ...no going back
-    switch(keyCode) {
-    case RIGHT: 
-      airplane.moveRight = true; 
-      break;
-    case LEFT: 
-      airplane.moveLeft = false; 
-      break;
-    case UP: 
-      airplane.moveUp = true; 
-      break;
-    }
-  }
+  // For the third level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
   if (levelCount == 2) {
-
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
@@ -420,6 +512,7 @@ void keyPressed () {
       break;
     }
   }
+  // For the fifth level, only move the airplane LEFT or RIGHT on its corresponding left or right keys
   if (levelCount == 4) {
     switch(keyCode) {
     case RIGHT: 
@@ -430,32 +523,8 @@ void keyPressed () {
       break;
     }
   }
-  if (levelCount == 7) {
-    switch(keyCode) {
-    case RIGHT: 
-      airplane.moveRight = true; 
-      break;
-    case LEFT: 
-      airplane.moveLeft = true; 
-      break;
-    case UP: 
-      airplane.moveUp = true; 
-      break;
-    }
-  }
-  if (levelCount == 9) {
-    switch(keyCode) {
-    case RIGHT: 
-      airplane.moveRight = true; 
-      break;
-    case LEFT: 
-      airplane.moveLeft = true; 
-      break;
-    case UP: 
-      airplane.moveUp = true; 
-      break;
-    }
-  }
+  // For the sixth level, move the airplane LEFT or RIGHT on its corresponding left or right keys
+  // and only allow the player to use the UP key once on its corresponding up key
   if (levelCount == 5) {
     switch(keyCode) {
     case RIGHT: 
@@ -472,8 +541,53 @@ void keyPressed () {
       break;
     }
   }
+  // For the eighth level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
+  if (levelCount == 7) {
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
+  // For the ninth level, only move the airplane RIGHT, or UP on its corresponding right and up keys
+  if (levelCount == 8) {
+    // ...no going back
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = false; 
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
+  // For the first level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
+  if (levelCount == 9) {
+    switch(keyCode) {
+    case RIGHT: 
+      airplane.moveRight = true; 
+      break;
+    case LEFT: 
+      airplane.moveLeft = true; 
+      break;
+    case UP: 
+      airplane.moveUp = true; 
+      break;
+    }
+  }
 }
 
+// This function is triggered by a mouse event: when the mouse is dragged, it will move the airplane
+// along the mouse's x and y coordinates
 void mouseDragged() {
   // For the third level, drag the airplane along the mouse's x and y position
   if (levelCount == 3) {
@@ -482,6 +596,8 @@ void mouseDragged() {
   }
 }
 
+// This function is triggered by a key event: when the key is released, it will stop 
+// the airplane from moving in that given direction
 void keyReleased() {
   // Stop moving the airplane upon key release
   airplane.moveRight = false; 
