@@ -24,7 +24,7 @@ class Button {
   // String holding the text to be displayed in the button
   String buttonText;
   
-  // Indicates if the object is hidden and prevents its drawinf if it is
+  // Indicates if the object is hidden and prevents its drawing if it is
   boolean hidden = false;
 
   // Class constructor. Builds a new button with given starting position, size and string.
