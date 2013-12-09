@@ -471,7 +471,7 @@ void mousePressed() {
 void keyPressed () {
   
   // For the first level, move the airplane LEFT, RIGHT, and UP on its corresponding left, right and up keys
-  if (levelCount == 0 || 2) {
+  if (levelCount == 0) {
     switch(keyCode) {
     case RIGHT: 
       airplane.moveRight = true; 
